@@ -1,0 +1,10 @@
+{
+    "name": "@repo/config",
+    "exports": {
+        "./*": "./src/*.ts"
+    },
+    "devDependencies": {
+        "@repo/typescript-config": "workspace:*",
+        "dotenv": "^17.2.1"
+    }
+}
