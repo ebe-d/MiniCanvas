@@ -66,7 +66,12 @@ wss.on('connection',function connection(ws,request){
         if(parsedData.type === "join_room"){
             const user=users.find(x=>x.ws===ws);
             user?.rooms.push(parsedData.roomId)
+
+             console.log("User joined room:", parsedData.roomId, typeof parsedData.roomId);
+             console.log("Current user rooms:", user?.rooms);
         }
+
+       
 
         if(parsedData.type==="leave_room"){
             const user=users.find(x=>x.ws===ws);
@@ -78,6 +83,8 @@ wss.on('connection',function connection(ws,request){
             const roomId=parsedData.roomId;
             const message=parsedData.message;
             
+            console.log("Broadcasting to room:", roomId, typeof roomId);
+            console.log("Users in room:", users.filter(u => u.rooms.includes(roomId)).length);
             await prisma.chat.create({
                 data:{
                     roomId:roomId,
