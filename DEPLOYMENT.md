@@ -54,7 +54,7 @@ Since you already have a Neon database:
    - Choose "Add variables later"
 
 2. **Configure Build Settings**
-   - **Build Command**: `npm install && cd apps/http-backend && npx prisma generate && npm run build`
+   - **Build Command**: `npm install && cd apps/http-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build`
    - **Start Command**: `cd apps/http-backend && npm start`
    - **Root Directory**: `/` (leave default)
 
@@ -76,7 +76,7 @@ Since you already have a Neon database:
    - Select the same repository
 
 2. **Configure Build Settings**
-   - **Build Command**: `npm install && cd apps/ws-backend && npx prisma generate && npm run build`
+   - **Build Command**: `npm install && cd apps/ws-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build`
    - **Start Command**: `cd apps/ws-backend && npm start`
    - **Root Directory**: `/`
 
@@ -150,13 +150,13 @@ git push origin main
 
 # 2. Deploy HTTP Backend on Railway
 # - Go to railway.app → New Project → Deploy from GitHub
-# - Build: npm install && cd apps/http-backend && npx prisma generate && npm run build
+# - Build: npm install && cd apps/http-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build
 # - Start: cd apps/http-backend && npm start
 # - Add: DATABASE_URL, JWT_SECRET
 
 # 3. Deploy WebSocket Backend on Railway
 # - Same repo, new project
-# - Build: npm install && cd apps/ws-backend && npx prisma generate && npm run build
+# - Build: npm install && cd apps/ws-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build
 # - Start: cd apps/ws-backend && npm start
 # - Add: DATABASE_URL, JWT_SECRET (same)
 
