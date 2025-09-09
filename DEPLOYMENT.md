@@ -54,7 +54,7 @@ Since you already have a Neon database:
    - Choose "Add variables later"
 
 2. **Configure Build Settings**
-   - **Build Command**: `cd apps/http-backend && npm install`
+   - **Build Command**: `cd apps/http-backend && npm install && npx prisma generate && npm run build`
    - **Start Command**: `cd apps/http-backend && npm start`
    - **Root Directory**: `/` (leave default)
 
@@ -63,7 +63,6 @@ Since you already have a Neon database:
    NODE_ENV=production
    DATABASE_URL=your-neon-connection-string
    JWT_SECRET=your-random-secret-key
-   PORT=8080
    ```
 
 4. **Deploy**
@@ -77,7 +76,7 @@ Since you already have a Neon database:
    - Select the same repository
 
 2. **Configure Build Settings**
-   - **Build Command**: `cd apps/ws-backend && npm install`
+   - **Build Command**: `cd apps/ws-backend && npm install && npx prisma generate && npm run build`
    - **Start Command**: `cd apps/ws-backend && npm start`
    - **Root Directory**: `/`
 
@@ -86,7 +85,6 @@ Since you already have a Neon database:
    NODE_ENV=production
    DATABASE_URL=your-neon-connection-string
    JWT_SECRET=same-as-http-backend
-   PORT=8080
    ```
 
 4. **Deploy**
@@ -152,15 +150,15 @@ git push origin main
 
 # 2. Deploy HTTP Backend on Railway
 # - Go to railway.app → New Project → Deploy from GitHub
-# - Build: cd apps/http-backend && npm install
+# - Build: cd apps/http-backend && npm install && npx prisma generate && npm run build
 # - Start: cd apps/http-backend && npm start
-# - Add: DATABASE_URL, JWT_SECRET, PORT=8080
+# - Add: DATABASE_URL, JWT_SECRET
 
 # 3. Deploy WebSocket Backend on Railway
 # - Same repo, new project
-# - Build: cd apps/ws-backend && npm install
+# - Build: cd apps/ws-backend && npm install && npx prisma generate && npm run build
 # - Start: cd apps/ws-backend && npm start
-# - Add: DATABASE_URL, JWT_SECRET (same), PORT=8080
+# - Add: DATABASE_URL, JWT_SECRET (same)
 
 # 4. Deploy Frontend on Vercel
 # - Go to vercel.com → Import GitHub repo
@@ -185,7 +183,6 @@ npx prisma generate
 NODE_ENV=production
 DATABASE_URL=postgresql://your-neon-connection-string
 JWT_SECRET=your-random-secret-key-here
-PORT=8080
 ```
 
 #### Railway WebSocket Backend
@@ -193,7 +190,6 @@ PORT=8080
 NODE_ENV=production
 DATABASE_URL=postgresql://your-neon-connection-string
 JWT_SECRET=same-as-http-backend-above
-PORT=8080
 ```
 
 #### Vercel Frontend
