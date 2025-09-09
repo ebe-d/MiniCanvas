@@ -4,7 +4,8 @@ import JWT_SECRET from '@repo/config/config';
 import prisma from '@repo/db/index';
 
 
-const wss=new WebSocketServer({port:8080});
+const PORT = process.env.PORT || 8080;
+const wss = new WebSocketServer({ port: parseInt(PORT.toString()) });
 
 interface User {
     ws:WebSocket,

@@ -17,15 +17,14 @@ app.post("/signup",async (req,res)=>{
     const Parseddata=CreateUserSchema.safeParse(req.body);
 
     if(Parseddata.error){
-        return res.status(404).json({
-            message:"Error in inputs",
-            error:Parseddata.error.message
-        })
+        return res.status(400).json({
+            message: "Please provide valid information for all fields"
+        });
     }
 
     const hashedPass=await bcrypt.hash(Parseddata.data.password,10);
     try{
-        await prisma.user.create({
+        const user = await prisma.user.create({
             data:{
                 name:Parseddata.data?.name,
                 email:Parseddata.data?.email,
@@ -33,27 +32,74 @@ app.post("/signup",async (req,res)=>{
             }
         })
 
+        const token=jwt.sign({
+            userId:user.id
+        },JWT_SECRET)
+
         return res.status(200).json({
-           message:'Sign up successfull'
+           message:'Sign up successfull',
+           token:token
         })
     }
-    catch(e){
-        return res.json({
-            error:e,
-        })
+    catch(e: any){
+        console.error('Signup error:', e);
+
+        // Handle specific database errors
+        if (e.code === 'P2002') {
+            return res.status(400).json({
+                message: 'An account with this email already exists'
+            });
+        }
+
+        return res.status(500).json({
+            message: 'Unable to create account. Please try again.'
+        });
     }
 
 })
+
+app.get("/me", middleware, async (req, res) => {
+    try {
+        //@ts-ignore
+        const userId = req.userId;
+
+        const user = await prisma.user.findFirst({
+            where: {
+                id: userId
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            user: user
+        });
+    } catch (e) {
+        console.error("Error fetching user:", e);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: e
+        });
+    }
+});
 
 app.post("/signin",async(req,res)=>{
     
     const parsedData=SignInSchema.safeParse(req.body);
 
     if(parsedData.error){
-        return res.status(404).json({
-            message:"Incorrect Inputs",
-            error:parsedData.error.message
-        })
+        return res.status(400).json({
+            message: "Please provide a valid email and password"
+        });
     }
 
     try{
@@ -88,14 +134,12 @@ app.post("/signin",async(req,res)=>{
             token:token
         })
     }
-    catch(e){
-    console.error("Signin error:", e); // <--- add this
+    catch(e: any){
+    console.error("Signin error:", e);
     return res.status(500).json({
-        message:'Internal Server Error',
-        error:e
-    })
-}
-
+        message: 'Unable to sign in. Please try again.'
+    });
+    }
 });
 
 app.post("/room",middleware,async(req,res)=>{
@@ -103,9 +147,9 @@ app.post("/room",middleware,async(req,res)=>{
     const parsedData=CreateRoomSchema.safeParse(req.body);
 
     if(parsedData.error){
-        return res.status(403).json({
-            error:parsedData.error.message
-        })
+        return res.status(400).json({
+            message: "Please provide a valid room name"
+        });
     }
 
     //@ts-ignore
@@ -126,11 +170,19 @@ app.post("/room",middleware,async(req,res)=>{
             id:room.id
         })
     }
-    catch(e){
-        return res.status(503).json({
-            message:"Internal Sever Error",
-            error:e
-        })
+    catch(e: any){
+        console.error("Room creation error:", e);
+
+        // Handle specific database errors
+        if (e.code === 'P2002') {
+            return res.status(400).json({
+                message: 'A room with this name already exists'
+            });
+        }
+
+        return res.status(500).json({
+            message: 'Unable to create room. Please try again.'
+        });
     }
 })
 
@@ -164,6 +216,7 @@ app.get("/rooms/:slug",async(req,res)=>{
     })
 })
 
-app.listen(3001,()=>{
-    console.log("Hi there at 3001");
-})
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`HTTP Backend running on port ${PORT}`);
+});

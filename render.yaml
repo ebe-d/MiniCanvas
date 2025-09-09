@@ -1,0 +1,68 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: minicanvas-db
+    env: postgres
+    plan: starter
+    # Database will be created automatically
+
+  # HTTP Backend API
+  - type: web
+    name: minicanvas-http-backend
+    env: node
+    plan: starter
+    buildCommand: "cd apps/http-backend && npm install && npm run build"
+    startCommand: "cd apps/http-backend && npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: minicanvas-db
+          property: connectionString
+      - key: PORT
+        value: 10000
+
+  # WebSocket Backend
+  - type: web
+    name: minicanvas-ws-backend
+    env: node
+    plan: starter
+    buildCommand: "cd apps/ws-backend && npm install && npm run build"
+    startCommand: "cd apps/ws-backend && npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: minicanvas-db
+          property: connectionString
+      - key: PORT
+        value: 10000
+
+  # Next.js Frontend
+  - type: web
+    name: minicanvas-frontend
+    env: node
+    plan: starter
+    buildCommand: "cd apps/minicanvas-fe && npm install && npm run build"
+    startCommand: "cd apps/minicanvas-fe && npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HTTP_BACKEND_URL
+        fromService:
+          type: web
+          name: minicanvas-http-backend
+          property: host
+      - key: WS_BACKEND_URL
+        fromService:
+          type: web
+          name: minicanvas-ws-backend
+          property: host
