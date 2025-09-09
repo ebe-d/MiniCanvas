@@ -54,7 +54,7 @@ Since you already have a Neon database:
    - Choose "Add variables later"
 
 2. **Configure Build Settings**
-   - **Build Command**: `npm install && cd apps/http-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build`
+   - **Build Command**: `npm install && cd apps/http-backend && npm run build`
    - **Start Command**: `cd apps/http-backend && npm start`
    - **Root Directory**: `/` (leave default)
 
@@ -76,7 +76,7 @@ Since you already have a Neon database:
    - Select the same repository
 
 2. **Configure Build Settings**
-   - **Build Command**: `npm install && cd apps/ws-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build`
+   - **Build Command**: `npm install && cd apps/ws-backend && npm run build`
    - **Start Command**: `cd apps/ws-backend && npm start`
    - **Root Directory**: `/`
 
@@ -119,9 +119,9 @@ Since you already have a Neon database:
    - Vercel will build and deploy automatically
    - Get your frontend URL (e.g., `https://minicanvas.vercel.app`)
 
-## 🗃️ Step 4: Database Migration
+## 🗃️ Step 4: Generate Prisma Client & Database Migration
 
-### Run Prisma Migrations on Your Neon DB
+### Generate Prisma Client Locally
 
 1. **Set Environment Variable**
     ```bash
@@ -129,16 +129,31 @@ Since you already have a Neon database:
     export DATABASE_URL="your-neon-database-connection-string"
     ```
 
-2. **Run Migrations**
+2. **Generate Prisma Client**
     ```bash
     cd packages/db
-    npx prisma migrate deploy
     npx prisma generate
     ```
 
-3. **Verify Connection**
-    - Your Neon database is already configured and ready
-    - Migrations will apply to your existing database
+3. **Commit Generated Files**
+    ```bash
+    git add .
+    git commit -m "Add generated Prisma client"
+    git push origin main
+    ```
+
+### Run Database Migrations
+
+4. **Deploy Migrations to Neon**
+    ```bash
+    cd packages/db
+    npx prisma migrate deploy
+    ```
+
+5. **Verify Connection**
+    - Your Neon database is configured and ready
+    - Prisma client is generated and committed
+    - Migrations applied to your database
 
 ## 🚀 Quick FREE Deployment Steps
 
@@ -150,13 +165,13 @@ git push origin main
 
 # 2. Deploy HTTP Backend on Railway
 # - Go to railway.app → New Project → Deploy from GitHub
-# - Build: npm install && cd apps/http-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build
+# - Build: npm install && cd apps/http-backend && npm run build
 # - Start: cd apps/http-backend && npm start
 # - Add: DATABASE_URL, JWT_SECRET
 
 # 3. Deploy WebSocket Backend on Railway
 # - Same repo, new project
-# - Build: npm install && cd apps/ws-backend && npx prisma generate --schema=../packages/db/prisma/schema.prisma && npm run build
+# - Build: npm install && cd apps/ws-backend && npm run build
 # - Start: cd apps/ws-backend && npm start
 # - Add: DATABASE_URL, JWT_SECRET (same)
 
@@ -165,11 +180,17 @@ git push origin main
 # - Root: apps/minicanvas-fe
 # - Add: HTTP_BACKEND_URL, WS_BACKEND_URL
 
-# 5. Run database migrations
+# 4. Generate Prisma client locally
 export DATABASE_URL="your-neon-connection-string"
 cd packages/db
-npx prisma migrate deploy
 npx prisma generate
+git add .
+git commit -m "Add generated Prisma client"
+git push origin main
+
+# 5. Run database migrations
+cd packages/db
+npx prisma migrate deploy
 
 # 6. 🎉 Your FREE MiniCanvas is live!
 ```
