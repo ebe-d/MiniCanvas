@@ -1,5 +1,2 @@
-import * as dotenv from "dotenv";
-
-dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET || "54498";
+const JWT_SECRET = "your-super-secure-jwt-secret-key-here-change-this-in-production";
 export default JWT_SECRET;
