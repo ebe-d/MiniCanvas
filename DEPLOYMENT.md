@@ -16,7 +16,7 @@ MiniCanvas consists of:
 |---------|----------|------|---------|
 | **Frontend** | Vercel | ✅ FREE | Next.js hosting |
 | **HTTP Backend** | Railway | ✅ FREE | Node.js API |
-| **WebSocket Backend** | Railway | ✅ FREE | Real-time server |
+| **WebSocket Backend** Paid 
 | **Database** | Neon | ✅ FREE | PostgreSQL |
 
 ## 📋 Prerequisites
